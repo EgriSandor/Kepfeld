@@ -1,0 +1,234 @@
+(define (factorial n)
+  (if (= n 1) ;(zero? n)
+    1
+    (* n (factorial(- n 1)))
+  )
+)
+
+(define (tail-fact n total)
+   (if (zero? n)
+      total
+      (tail-fact (- n 1) (* n total))
+   )
+)
+
+
+(define fact
+  (lambda (n)
+    (letrec 
+      ((fact-it
+        (lambda (k acc)
+          (if (zero? k)
+            acc
+            (fact-it (- k 1) (* k acc) )
+          )
+        )
+      ))
+      (fact-it n 1)
+    )
+  )
+)
+
+
+
+(define fib-it
+  (lambda (n acc1 acc2)
+    (if (= n 1)
+       acc2
+       (fib-it (- n 1) acc2 (+ acc1 acc2))
+    )
+  )
+)
+
+(define (insert-sorted n ls)
+  (cond
+    (;1. ag
+     (null? ls) ;feltetel
+     (cons n '());body
+    )
+    (;2. ag
+     (<= n (car ls));feltetel
+     (if (= n (car ls))
+        ls
+        (cons n ls)
+      )
+    )
+    (else
+      (cons (car ls) (insert-sorted n (cdr ls)))
+    )
+  )
+)
+
+(insert-sorted 4 '())
+(insert-sorted 4 '(1 3 5))
+;(insert-sorted 4 '(1 2 3))
+;(insert-sorted 4 '(7 9 10))
+
+
+(define (len list)
+     (if (list? list)
+         (length list)
+         #f
+      )
+)
+
+(define (sublist-length list)
+  (cond
+       ((null? list) '())
+       (else (cons (len (car list)) (sublist-length (cdr list) )))
+  )
+)
+
+(display (sublist-length '((1 2) () (3))))
+(newline)
+(display (sublist-length '((1 2) 3)))
+
+
+(define (contains list elem)
+    (cond
+         ((null? list) #f)
+         ((eq? elem (car list)) #t)
+         (else (contains (cdr list) elem))
+     
+    )
+)
+
+(newline)
+(display (contains '(1 1 4 2 3 ) 4))
+
+(define (unique-element-list list)
+    (cond
+     ((null? list) #t)
+     ((contains (cdr list) (car list)) #f)
+     (else (unique-element-list (cdr list)))
+     )
+)
+
+(newline)
+(display (unique-element-list '(1 2 3 4 5 )))
+  (newline)
+(display (unique-element-list '(1 2 3 4 (1)) ))
+  
+(define (digits szam)
+  (if (< szam 10)
+      1
+      (+ 1 (digits (/ szam 10)))   
+  )
+)
+   
+(newline)
+(display (digits 10)) 
+(newline)
+(display (digits 10000))
+(newline)
+(display (digits 1))
+
+
+(define (insert-right-1st new old list)
+	(cond
+		((null? list) '())
+		((equal? (car list) old)
+			(cons old (cons new (cdr list))))
+		(else (cons (car list) (insert-right-1st new old (cdr list))))
+	)
+)
+
+(display (insert-right-1st 'not 'does '(my dog does have flees)))
+(newline)
+(display (insert-right-1st 'a 'b '()))
+(newline)
+
+(define (insert-left-1st new old list)
+	(cond
+		((null? list) '())
+		((equal? (car list) old)
+			(cons new (cons old (cdr list))))
+		(else (cons (car list) (insert-left-1st new old (cdr list))))
+	)
+)
+
+(display (insert-left-1st 'hot 'dogs '(I eat dogs)))
+(newline)
+(display (insert-left-1st 'fun 'games '(some fun)))
+(newline)
+(display (insert-left-1st 'a 'b '()))
+(newline)
+
+(define (replace item list)
+	(cond
+		((null? list) '())
+		(else (cons item (replace item (cdr list)) ))
+	)
+)
+
+
+
+(display (replace 'no '(will you do me a favor) ))
+(newline)
+(display (replace 'yes '(do you like ice cream) ))
+(newline)
+(display (replace 'why '(not) ))
+(newline)
+(display (replace 'maybe '() ))
+(newline)
+
+(define flatten 
+  (lambda (ls)
+    (cond
+       ((null? ls)  '())
+       ((pair? (car ls))
+         (append (flatten (car ls)) (flatten (cdr ls)))
+       )
+       (else (cons (car ls) (flatten (cdr ls) ) ) )
+    )
+  )
+)
+
+
+
+(display (flatten '(1 (2 3) (4 (5 6 )) ) ))
+(newline)
+
+(define reverse
+  (lambda (ls)
+    (if (null? ls)
+      '()
+      (append (reverse (cdr ls)) (list (car ls) ))
+    )
+  )
+)
+
+(define reverse-it
+  (lambda (ls acc)
+    (if (null? ls)
+      acc
+      (reverse-it (cdr ls) (cons (car ls) acc))
+    )
+  )
+)
+
+(display (reverse-it  '(1 (2 3) (4 (5 6 )) ) '() ))
+(newline)
+  
+
+(define dth
+(let ((show-move (lambda (s d)
+  (display s)
+  (display "--->")
+  (display d))))
+ (lambda (n)
+  (letrec
+   ((move
+    (lambda (n src dest helper)
+   (if (= n 1)
+  (begin
+   (show-move src dest)
+   (newline))
+  (begin 
+    (move (- n 1) src helper dest)
+    (show-move src dest)
+    (display ", ")
+    (move (- n 1) helper dest src))))))
+  (move n 'L 'R 'C)))))
+
+(dth 3)
